@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RentUp — Rental Performance System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--brand:#C77936;--brand-light:#FAF4EB;--brand-border:#E8D5BC;--bg:#FDFAF6;--bg-stone:#F5EFE6;--bg-warm:#F0E8DA;--border:#EDE5D8;--dark:#2D2820;--text:#2D2820;--mid:#7A6E62;--muted:#9A8E82;--light:#B8AFA4;--green:#0F6E56;--green-bg:#E1F5EE;}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+nav{position:sticky;top:0;z-index:100;background:rgba(253,250,246,.95);backdrop-filter:blur(10px);border-bottom:.5px solid var(--border);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:18px;font-weight:500;color:var(--brand);text-decoration:none;letter-spacing:-.02em}
+.nav-links{display:flex;gap:28px}.nav-links a{font-size:13px;color:var(--muted);text-decoration:none}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{font-size:13px;font-weight:500;color:var(--brand);border:.5px solid var(--brand);padding:7px 18px;border-radius:100px;text-decoration:none}
+.nav-cta:hover{background:var(--brand-light)}
+section{padding:80px 48px}
+.sec-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--brand);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--brand)}
+h2{font-size:36px;font-weight:300;color:var(--text);line-height:1.1;letter-spacing:-.025em;margin-bottom:12px}
+.sec-sub{font-size:15px;color:var(--muted);line-height:1.7;max-width:520px;margin-bottom:40px}
+
+/* HERO */
+#hero{padding:80px 48px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;min-height:88vh}
+.hero-h1{font-size:52px;font-weight:300;line-height:1.05;letter-spacing:-.03em;margin-bottom:22px}
+.hero-h1 em{font-style:normal;font-weight:500;color:var(--brand)}
+.hero-sub{font-size:15px;color:var(--muted);line-height:1.75;margin-bottom:36px}
+.hero-btns{display:flex;gap:16px;align-items:center}
+.btn-p{font-size:14px;font-weight:500;background:var(--brand);color:var(--bg);padding:13px 26px;border-radius:100px;text-decoration:none;border:none;cursor:pointer}
+.btn-p:hover{background:#a8622a}
+.btn-g{font-size:14px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:none}
+.micro{font-size:12px;color:var(--light);margin-top:14px}
+.hero-visual{background:var(--bg-warm);border-radius:16px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--light);text-align:center;line-height:2;border:.5px solid var(--border)}
+
+/* STATS */
+#stats{padding:0;border-top:.5px solid var(--border);border-bottom:.5px solid var(--border)}
+.stats-g{display:grid;grid-template-columns:repeat(4,1fr)}
+.stat{padding:28px 24px;border-right:.5px solid var(--border);text-align:center}
+.stat:last-child{border-right:none}
+.stat-v{font-size:28px;font-weight:300;color:var(--brand);letter-spacing:-.02em;margin-bottom:6px}
+.stat-l{font-size:12px;color:var(--light);line-height:1.4}
+
+/* CALC */
+#calc{background:var(--bg-stone)}
+.calc-inner{max-width:660px;margin:0 auto}
+input[type=range]{width:100%;appearance:none;height:2px;background:var(--border);border-radius:2px;outline:none;cursor:pointer;margin:8px 0}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:18px;height:18px;border-radius:50%;background:var(--brand);cursor:pointer;border:2px solid white;box-shadow:0 1px 4px rgba(199,121,54,.3)}
+.fg{margin-bottom:22px}
+.fl{font-size:13px;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between}
+.fl strong{color:var(--text)}
+.fhint{font-size:11px;color:var(--light);margin-top:4px}
+.tbns{display:flex;gap:8px}
+.tbn{flex:1;padding:9px 12px;background:var(--bg);border:.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;text-align:center;font-family:'Inter',sans-serif;transition:all .15s}
+.tbn.on{background:var(--brand-light);color:var(--brand);border-color:var(--brand-border)}
+.two-f{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.cr{background:var(--bg);border:.5px solid var(--border);border-radius:14px;padding:24px;margin-top:28px}
+.crh{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:14px;border-bottom:.5px solid var(--border)}
+.crh-l{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.crh-r{font-size:12px;color:var(--light)}
+.cr-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.cr-s{background:var(--bg-stone);border-radius:8px;padding:14px}
+.cr-sl{font-size:11px;color:var(--light);margin-bottom:4px}
+.cr-sv{font-size:22px;font-weight:300;color:var(--text)}
+.cr-sv.g{color:var(--green)}
+.diff{background:var(--green-bg);border:.5px solid #9FD8C4;border-radius:10px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+.diff-l{font-size:13px;color:var(--green)}
+.diff-roi{font-size:11px;color:var(--green);margin-top:4px}
+.diff-v{font-size:28px;font-weight:300;color:var(--green)}
+.sc-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:14px}
+.sc-tbl th{text-align:left;padding:7px 10px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--light);border-bottom:.5px solid var(--border)}
+.sc-tbl td{padding:9px 10px;border-bottom:.5px solid var(--border);color:var(--muted)}
+.sc-tbl tr:last-child td{border-bottom:none}
+.sc-tbl .hl td{color:var(--text);font-weight:500}
+.vg{color:var(--green);font-weight:500}
+.disc{font-size:11px;color:var(--light);margin-top:12px;line-height:1.5}
+
+/* ABOUT */
+#about{background:var(--bg)}
+.team-g{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:48px}
+.tc{border:.5px solid var(--border);border-radius:12px;padding:24px}
+.tc-photo{background:var(--bg-warm);border-radius:8px;height:100px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--light);margin-bottom:16px;letter-spacing:.03em}
+.tc-role{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--brand);margin-bottom:6px}
+.tc-name{font-size:17px;font-weight:500;margin-bottom:10px}
+.tc-bio{font-size:13px;color:var(--muted);line-height:1.7}
+.reasons{display:flex;flex-direction:column;gap:14px}
+.reason{display:flex;gap:14px}
+.rn{font-size:13px;font-weight:500;color:var(--brand);flex-shrink:0;width:22px;padding-top:1px}
+.rt{font-size:14px;color:var(--mid);line-height:1.65}
+.rt strong{color:var(--text);font-weight:500}
+
+/* CLIENT FIT */
+#fit{background:var(--bg-stone)}
+.fit-g{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.fc{border:.5px solid var(--border);border-radius:12px;padding:26px;background:var(--bg)}
+.fc-t{font-size:15px;font-weight:500;margin-bottom:16px}
+.fc-t.yes{color:var(--green)}.fc-t.no{color:#A32D2D}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.fc ul li{font-size:13px;color:var(--mid);line-height:1.55;display:flex;gap:10px}
+.fc ul li::before{content:'–';color:var(--brand);flex-shrink:0;font-weight:500}
+.fc.no-c ul li::before{color:#A32D2D}
+.fit-note{background:var(--brand-light);border:.5px solid var(--brand-border);border-radius:10px;padding:20px 24px;font-size:14px;color:var(--dark);line-height:1.65;font-style:italic}
+
+/* PROCESS */
+#process{background:var(--bg)}
+.proc-g{display:grid;grid-template-columns:repeat(4,1fr);border:.5px solid var(--border);border-radius:12px;overflow:hidden}
+.pc{padding:26px 22px;border-right:.5px solid var(--border)}
+.pc:last-child{border-right:none}
+.pc-n{font-size:44px;font-weight:200;color:var(--border);line-height:1;margin-bottom:14px;letter-spacing:-.04em}
+.pc-t{font-size:14px;font-weight:500;margin-bottom:8px}
+.pc-d{font-size:13px;color:var(--muted);line-height:1.6}
+.pc-time{display:inline-block;font-size:11px;color:var(--brand);font-weight:500;margin-top:12px}
+.proc-note{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+
+/* PORTFOLIO */
+#portfolio{background:var(--bg-stone)}
+.port-g{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ba{border:.5px solid var(--border);border-radius:12px;overflow:hidden}
+.ba-ph{display:grid;grid-template-columns:1fr 1fr}
+.ba-p{height:160px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.06em}
+.ba-p.b{background:var(--bg-warm);color:var(--light)}
+.ba-p.a{background:#E8F5ED;color:#4A9E6A}
+.ba-info{padding:14px 18px;background:var(--bg);border-top:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.ba-name{font-size:13px;font-weight:500}
+.ba-meta{font-size:11px;color:var(--muted);margin-top:3px}
+.ba-res{font-size:12px;font-weight:500;color:var(--green);background:var(--green-bg);padding:4px 12px;border-radius:100px}
+
+/* TESTIMONIALS */
+#testimonials{background:var(--bg)}
+.te-g{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:36px}
+.tec{background:var(--bg-stone);border:.5px solid var(--border);border-radius:12px;padding:22px}
+.tec-t{font-size:13px;color:var(--mid);line-height:1.75;font-style:italic;margin-bottom:14px}
+.tec-n{font-size:13px;font-weight:500}
+.tec-m{font-size:11px;color:var(--light);margin-top:3px}
+.tec-tag{display:inline-block;background:var(--brand-light);color:var(--brand);font-size:11px;font-weight:500;padding:4px 12px;border-radius:100px;margin-top:10px}
+.cs{border:.5px solid var(--border);border-radius:14px;overflow:hidden}
+.cs-h{background:var(--brand-light);padding:24px 28px;border-bottom:.5px solid var(--brand-border)}
+.cs-title{font-size:19px;font-weight:500;margin-bottom:12px}
+.cs-tags{display:flex;gap:8px;flex-wrap:wrap}
+.cs-tag{font-size:11px;background:var(--bg);border:.5px solid var(--brand-border);color:var(--brand);padding:4px 12px;border-radius:100px;font-weight:500}
+.cs-body{padding:28px}
+.cs-g{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+.cs-sl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--brand);margin-bottom:10px}
+.cs-p{font-size:13px;color:var(--mid);line-height:1.7}
+.cs-res{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+.cs-r{background:var(--green-bg);border-radius:10px;padding:14px;text-align:center;border:.5px solid #9FD8C4}
+.cs-rv{font-size:22px;font-weight:300;color:var(--green);margin-bottom:4px}
+.cs-rl{font-size:11px;color:var(--green);line-height:1.4}
+.cs-q{background:var(--brand-light);border-left:2px solid var(--brand);border-radius:0 10px 10px 0;padding:16px 20px;font-size:13px;color:var(--dark);font-style:italic;line-height:1.7}
+.cs-qa{font-size:12px;font-weight:500;color:var(--brand);margin-top:8px;font-style:normal}
+.bud-g{display:flex;flex-direction:column;gap:6px}
+.bud-row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:6px 0;border-bottom:.5px solid var(--border)}
+.bud-row strong{color:var(--text)}
+.bud-total{display:flex;justify-content:space-between;font-size:14px;font-weight:500;padding:8px 0}
+.bud-total span:last-child{color:var(--brand)}
+
+/* PACKAGES */
+#packages{background:var(--bg-stone)}
+.pkg-g{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.pkg{border-radius:14px;overflow:hidden;border:.5px solid var(--border);background:var(--bg)}
+.pkg-h{padding:24px 20px 18px}
+.pkg-name{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--light);margin-bottom:12px}
+.pkg-price{font-size:38px;font-weight:300;color:var(--text);letter-spacing:-.04em;line-height:1}
+.pkg-price span{font-size:13px;font-weight:400;color:var(--light)}
+.pkg-desc{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.55}
+.pkg-div{height:.5px;background:var(--border);margin:0 20px}
+.pkg-b{padding:18px 20px}
+.pkg-sl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--light);margin-bottom:8px;margin-top:12px}
+.pkg-sl:first-child{margin-top:0}
+.pf{font-size:12px;color:var(--mid);line-height:1.9;display:flex;gap:8px}
+.fd{color:var(--brand);font-weight:500;flex-shrink:0}
+.fdo{color:var(--border);flex-shrink:0}
+.fo{color:var(--light)}
+/* STANDARD */
+.pkg-std{border-color:var(--brand)}
+.pkg-std .pkg-h{background:var(--brand-light)}
+.pkg-std .pkg-name{color:var(--brand)}
+.pkg-std .pkg-div{background:var(--brand-border)}
+/* PREMIUM — FULL ORANGE */
+.pkg-pre{border-color:var(--brand);background:var(--brand)}
+.pkg-pre .pkg-h{background:var(--brand)}
+.pkg-pre .pkg-name{color:rgba(253,250,246,.75)}
+.pkg-pre .pkg-price{color:#FDFAF6}
+.pkg-pre .pkg-price span{color:rgba(253,250,246,.6)}
+.pkg-pre .pkg-desc{color:rgba(253,250,246,.75)}
+.pkg-pre .pkg-div{background:rgba(253,250,246,.2)}
+.pkg-pre .pkg-b{background:var(--brand)}
+.pkg-pre .pkg-sl{color:rgba(253,250,246,.65)}
+.pkg-pre .pf{color:rgba(253,250,246,.9)}
+.pkg-pre .fd{color:#FDFAF6}
+.pkg-pre .pkg-sl.kit{color:#FDFAF6;font-size:11px;font-weight:600}
+/* AUDIT */
+.audit{background:var(--bg);border:.5px solid var(--border);border-radius:12px;padding:24px 28px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.aud-l .aud-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--brand);margin-bottom:8px}
+.aud-l .aud-title{font-size:18px;font-weight:500;margin-bottom:8px}
+.aud-l .aud-desc{font-size:13px;color:var(--muted);line-height:1.6;max-width:400px}
+.aud-r{text-align:center;flex-shrink:0}
+.aud-price{font-size:38px;font-weight:300;color:var(--brand)}
+.aud-sub{font-size:11px;color:var(--light);margin-top:4px}
+.aud-btn{display:inline-block;background:var(--brand);color:var(--bg);font-size:13px;font-weight:500;padding:10px 22px;border-radius:100px;margin-top:14px;text-decoration:none}
+
+/* PM */
+#pm{background:var(--bg)}
+.pm-g{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pm-c{border-radius:12px;border:.5px solid var(--border);overflow:hidden}
+.pm-h{padding:22px 18px 16px;border-bottom:.5px solid var(--border)}
+.pm-name{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--light);margin-bottom:10px}
+.pm-price{font-size:34px;font-weight:300;color:var(--text);letter-spacing:-.03em}
+.pm-price span{font-size:13px;font-weight:400;color:var(--light)}
+.pm-tag{font-size:12px;color:var(--muted);margin-top:6px;font-style:italic}
+.pm-b{padding:16px 18px;background:var(--bg-stone)}
+.pmf{font-size:12px;color:var(--mid);line-height:1.9;display:flex;gap:8px}
+.pm-sep{height:.5px;background:var(--border);margin:8px 0}
+.pm-pre .pm-h{background:var(--brand-light)}
+.pm-pre .pm-name{color:var(--brand)}
+.pm-pre .pm-b{background:var(--brand-light)}
+.pm-note{font-size:12px;color:var(--light);font-style:italic;margin-top:14px}
+
+/* FAQ */
+#faq{background:var(--bg-stone)}
+.faq-inner{max-width:680px;margin:0 auto}
+.fi{border-bottom:.5px solid var(--border);padding:20px 0;cursor:pointer}
+.fi:last-child{border-bottom:none}
+.fq{font-size:15px;font-weight:500;display:flex;justify-content:space-between;gap:16px;user-select:none}
+.fi-icon{font-size:20px;color:var(--brand);flex-shrink:0;transition:transform .2s}
+.fa{font-size:13px;color:var(--muted);line-height:1.75;margin-top:12px;display:none}
+.fi.open .fa{display:block}
+.fi.open .fi-icon{transform:rotate(45deg)}
+
+/* CONTACT */
+#contact{background:var(--dark);text-align:center}
+.con-h{font-size:40px;font-weight:300;color:var(--bg);letter-spacing:-.025em;margin-bottom:12px;line-height:1.15}
+.con-h em{font-style:normal;color:var(--brand)}
+.con-sub{font-size:15px;color:var(--muted);margin-bottom:40px;line-height:1.65}
+.con-btns{display:flex;gap:12px;justify-content:center;margin-bottom:48px;flex-wrap:wrap}
+.con-p{background:var(--brand);color:var(--bg);font-size:14px;font-weight:500;padding:13px 28px;border-radius:100px;text-decoration:none}
+.con-g{color:var(--muted);font-size:14px;padding:13px 24px;border:.5px solid #4D4238;border-radius:100px;text-decoration:none}
+.con-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:560px;margin:0 auto}
+.cc{background:#3D3228;border-radius:10px;padding:18px}
+.cc-l{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px;font-weight:500}
+.cc-v{font-size:14px;font-weight:500;color:var(--bg)}
+.con-micro{font-size:12px;color:#5A5248;margin-top:28px}
+
+footer{background:var(--bg);border-top:.5px solid var(--border);padding:22px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.f-logo{font-size:15px;font-weight:500;color:var(--brand)}
+.f-t{font-size:12px;color:var(--light)}
+
+@media(max-width:860px){
+nav,section,#hero,#contact,footer{padding-left:20px;padding-right:20px}
+#hero{grid-template-columns:1fr;min-height:auto;padding-top:48px;padding-bottom:48px}.hero-visual{display:none}
+.hero-h1{font-size:36px}.stats-g{grid-template-columns:1fr 1fr}
+.two-f,.team-g,.fit-g,.cs-g,.proc-g,.pkg-g,.te-g,.pm-g,.port-g,.con-cards{grid-template-columns:1fr}
+.pc{border-right:none;border-bottom:.5px solid var(--border)}.pc:last-child{border-bottom:none}
+.cs-res{grid-template-columns:1fr 1fr}.audit,.con-btns{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#">RentUp</a>
+  <div class="nav-links">
+    <a href="#about">Servicii</a><a href="#process">Cum funcționează</a>
+    <a href="#packages">Prețuri</a><a href="#portfolio">Portofoliu</a><a href="#faq">FAQ</a>
+  </div>
+  <a class="nav-cta" href="#calc">Estimare gratuită</a>
+</nav>
+
+<!-- S1 HERO -->
+<section id="hero">
+  <div>
+    <div class="sec-tag" style="margin-bottom:22px"><div class="dot"></div>Rental Performance System</div>
+    <h1 class="hero-h1">Chiriași stabili.<br><em>Venituri predictibile.</em></h1>
+    <p class="hero-sub">Transformăm apartamente obișnuite în active care produc venituri stabile — prin design funcțional, sistem complet de închiriere și selecție profesională a chiriașilor.</p>
+    <div class="hero-btns">
+      <a class="btn-p" href="#calc">Calculează câștigul tău →</a>
+      <button class="btn-g" onclick="document.getElementById('portfolio').scrollIntoView({behavior:'smooth'})">Vezi portofoliul</button>
+    </div>
+    <p class="micro">Consultație inițială gratuită · Fără angajament · Răspuns în 24h</p>
+  </div>
+  <div class="hero-visual">[ fotografie before / after<br>proiect Rent Up ]</div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stats-g">
+    <div class="stat"><div class="stat-v">+160€</div><div class="stat-l">chirie lunară în plus, în medie</div></div>
+    <div class="stat"><div class="stat-v">~8 luni</div><div class="stat-l">recuperare completă a investiției</div></div>
+    <div class="stat"><div class="stat-v">5 zile</div><div class="stat-l">până la primul chiriaș potrivit</div></div>
+    <div class="stat"><div class="stat-v">0€</div><div class="stat-l">costul consultației inițiale</div></div>
+  </div>
+</div>
+
+<!-- S2 CALCULATOR -->
+<section id="calc">
+  <div class="sec-tag"><div class="dot"></div>Calculator</div>
+  <h2>Cât pierde apartamentul tău<br>în fiecare an fără optimizare?</h2>
+  <p class="sec-sub">Introdu chiria actuală și suprafața. Calculatorul îți arată estimativ diferența în 5 sau 10 ani.</p>
+  <div class="calc-inner">
+    <div class="fg"><span class="fl">Tip proprietate</span>
+      <div class="tbns">
+        <button class="tbn on" onclick="setType('garsoniera',this)">Garsonieră</button>
+        <button class="tbn" onclick="setType('2camere',this)">2 camere</button>
+        <button class="tbn" onclick="setType('3camere',this)">3 camere</button>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Suprafața apartamentului<strong id="mp-d"> 40 mp</strong></label>
+      <input type="range" id="mp-s" min="20" max="60" value="40" step="1" oninput="calc()">
+      <span class="fhint" id="mp-h">Interval tipic garsonieră: 25–50 mp</span>
+    </div>
+    <div class="fg"><label class="fl">Chiria actuală (€/lună)<strong id="re-d"> 350€</strong></label>
+      <input type="range" id="re-s" min="200" max="700" value="350" step="10" oninput="calc()">
+      <span class="fhint" id="re-h">Interval tipic neoptimizată în București: 300–450€</span>
+    </div>
+    <div class="fg"><span class="fl">Orizont de timp</span>
+      <div class="tbns">
+        <button class="tbn on" onclick="setYears(5,this)">5 ani</button>
+        <button class="tbn" onclick="setYears(10,this)">10 ani</button>
+      </div>
+    </div>
+    <div class="cr">
+      <div class="crh"><span class="crh-l">Estimare comparativă</span><span class="crh-r" id="yr-l">pe 5 ani</span></div>
+      <div class="cr-stats">
+        <div class="cr-s"><div class="cr-sl">Chirie actuală / lună</div><div class="cr-sv" id="r-cur">—</div></div>
+        <div class="cr-s"><div class="cr-sl">Chirie estimată după optimizare</div><div class="cr-sv g" id="r-opt">—</div></div>
+        <div class="cr-s"><div class="cr-sl">Venit net fără optimizare</div><div class="cr-sv" id="r-nb">—</div></div>
+        <div class="cr-s"><div class="cr-sl">Venit net cu optimizare</div><div class="cr-sv g" id="r-ng">—</div></div>
+      </div>
+      <div class="diff">
+        <div><div class="diff-l">Câștig suplimentar estimat</div><div class="diff-roi" id="r-roi">—</div></div>
+        <div class="diff-v" id="r-df">—</div>
+      </div>
+      <table class="sc-tbl">
+        <thead><tr><th>Scenariu</th><th>Chiriași</th><th>Luni goale</th><th>Venit brut</th><th>Net final</th></tr></thead>
+        <tbody id="r-tb"></tbody>
+      </table>
+      <p class="disc">* Estimările sunt orientative, bazate pe piața din București. Nu constituie garanție de rezultat.</p>
+    </div>
+    <div style="text-align:center;margin-top:24px">
+      <a class="btn-p" href="#contact">Vorbim despre apartamentul tău →</a>
+    </div>
+  </div>
+</section>
+
+<!-- S3 ABOUT -->
+<section id="about">
+  <div class="sec-tag"><div class="dot"></div>Despre noi</div>
+  <h2>Nu facem design.<br>Optimizăm active imobiliare.</h2>
+  <p class="sec-sub">Misiunea noastră este să transformăm apartamentele obișnuite în active stabile și profitabile. Nu ne concentrăm doar pe estetică — ci pe performanța reală a spațiului în timp.</p>
+  <div class="team-g">
+    <div class="tc">
+      <div class="tc-photo">[ fotografie Cristiana ]</div>
+      <div class="tc-role">Co-fondator</div>
+      <div class="tc-name">Czerwinski Cristiana</div>
+      <p class="tc-bio">Absolventă a Facultății de Arhitectură "Ion Mincu" din București, cu studii extinse la Facultatea Tehnică din Viena. Din 2019 colaborez cu studiouri internaționale de top. Mă concentrez pe estetică și impact vizual — cum arată un spațiu, cum se simte și cum este perceput din prima clipă.</p>
+    </div>
+    <div class="tc">
+      <div class="tc-photo">[ fotografie Cătălina ]</div>
+      <div class="tc-role">Co-fondator</div>
+      <div class="tc-name">Avram Cătălina</div>
+      <p class="tc-bio">Absolventă a Facultății de Arhitectură, cu experiență construită lucrând cu numeroși proprietari care au ales să investească în apartamentele lor. Abordarea mea este serioasă și orientată spre rezultate reale — spații care nu doar arată bine, ci funcționează corect în timp.</p>
+    </div>
+  </div>
+  <div class="sec-tag"><div class="dot"></div>De ce funcționează</div>
+  <div class="reasons">
+    <div class="reason"><span class="rn">01</span><div class="rt"><strong>Creștem venitul, nu doar aspectul</strong> — Nu vindem randări. Vindem rezultate: chirie mai mare, chiriași mai stabili, mai puține perioade goale. Diferența poate ajunge la mii de euro în câțiva ani.</div></div>
+    <div class="reason"><span class="rn">02</span><div class="rt"><strong>Un sistem complet, nu un proiect izolat</strong> — Design + strategie de piață + listare + selecție chiriaș + protecție contractuală. Primești un proces clar, nu doar un concept.</div></div>
+    <div class="reason"><span class="rn">03</span><div class="rt"><strong>Spații pentru viața reală, nu pentru poze</strong> — Optimizăm pentru depozitare eficientă, flux natural și materiale durabile. Spațiul arată bine și rezistă în timp.</div></div>
+    <div class="reason"><span class="rn">04</span><div class="rt"><strong>Atragem tipul corect de chiriaș</strong> — Definim cui i se adresează apartamentul, cum îl prezentăm și cum îl selectăm. Chiriași mai stabili, contracte mai lungi.</div></div>
+    <div class="reason"><span class="rn">05</span><div class="rt"><strong>Claritate și control în tot procesul</strong> — Fără improvizații. Pași definiți, termene clare, suport în implementare. Știi exact ce se întâmplă, când și de ce.</div></div>
+  </div>
+</section>
+
+<!-- S4 CLIENT FIT -->
+<section id="fit">
+  <div class="sec-tag"><div class="dot"></div>Este pentru tine?</div>
+  <h2>Filtrăm de la început pentru<br>a lucra cu proprietarii potriviți.</h2>
+  <div class="fit-g">
+    <div class="fc">
+      <div class="fc-t yes">✓ Potrivit pentru tine dacă...</div>
+      <ul>
+        <li>Vrei să îți crești chiria și înțelegi că asta necesită o investiție inițială</li>
+        <li>Ai un buget realist pentru implementare (mobilier + serviciu)</li>
+        <li>Ești dispus să urmezi un proces clar, cu etape definite</li>
+        <li>Vrei chiriași stabili pe termen lung, nu cea mai rapidă ocupare</li>
+        <li>Îți pasă cum arată și funcționează spațiul tău</li>
+        <li>Ești deschis la recomandări profesionale</li>
+      </ul>
+    </div>
+    <div class="fc no-c">
+      <div class="fc-t no">✗ Nu este pentru tine dacă...</div>
+      <ul>
+        <li>Vrei „doar niște randări rapide" fără un proces real</li>
+        <li>Schimbi direcția zilnic sau nu știi ce vrei</li>
+        <li>Cauți cel mai ieftin preț din piață</li>
+        <li>Nu ești dispus să investești în calitate durabilă</li>
+        <li>Vrei rezultate instant, fără proces sau etape</li>
+        <li>Ai deja contractori și vrei doar validare estetică</li>
+      </ul>
+    </div>
+  </div>
+  <div class="fit-note">Nu colaborăm pentru a face un apartament DOAR mai frumos. Colaborăm pentru a-l transforma într-un activ stabil și profitabil. Dacă obiectivele tale se aliniază cu asta — suntem în locul potrivit.</div>
+</section>
+
+<!-- S5 PROCESS -->
+<section id="process">
+  <div class="sec-tag"><div class="dot"></div>Cum funcționează</div>
+  <h2>Un proces clar. Fără surprize.</h2>
+  <p class="sec-sub">De la prima discuție până la apartamentul gata de listare. Știi exact ce se întâmplă la fiecare pas — și ce urmează.</p>
+  <div class="proc-g">
+    <div class="pc"><div class="pc-n">01</div><div class="pc-t">Discuție inițială</div><div class="pc-d">Înțelegem spațiul, obiectivul de închiriere, bugetul și publicul țintă. Fără brief standard — fiecare proprietate e diferită.</div><span class="pc-time">2–5 zile</span></div>
+    <div class="pc"><div class="pc-n">02</div><div class="pc-t">Concept & direcție</div><div class="pc-d">Propunem direcția estetică și funcțională. Tu validezi înainte să intrăm în detalii — nicio surpriză mai târziu.</div><span class="pc-time">1–2 săptămâni</span></div>
+    <div class="pc"><div class="pc-n">03</div><div class="pc-t">Design & vizualizare</div><div class="pc-d">Planuri detaliate, furnizori cu prețuri, randări fotorealiste. Vezi exact cum va arăta spațiul înainte să cumperi ceva.</div><span class="pc-time">3–5 săptămâni</span></div>
+    <div class="pc"><div class="pc-n">04</div><div class="pc-t">Livrare & piață</div><div class="pc-d">Rental Kit complet, staging și fotografii profesionale, listare pe platforme. Apartamentul intră pe piață pregătit.</div><span class="pc-time">etapa finală</span></div>
+  </div>
+  <p class="proc-note">Duratele sunt orientative și depind de complexitate și viteza de feedback. Basic: 4–6 săptămâni. Premium cu suport complet: 8–12 săptămâni.</p>
+</section>
+
+<!-- S6 PORTFOLIO -->
+<section id="portfolio">
+  <div class="sec-tag"><div class="dot"></div>Portofoliu</div>
+  <h2>Rezultate reale. Spații transformate.</h2>
+  <p class="sec-sub">Fiecare proiect a urmărit același obiectiv: un apartament care produce mai mult, cu mai puțin efort pentru proprietar.</p>
+  <div class="port-g">
+    <div class="ba">
+      <div class="ba-ph"><div class="ba-p b">ÎNAINTE</div><div class="ba-p a">DUPĂ</div></div>
+      <div class="ba-info"><div><div class="ba-name">Garsonieră Floreasca · 38 mp</div><div class="ba-meta">Pachet Standard · 7 săptămâni</div></div><div class="ba-res">320€ → 480€</div></div>
+    </div>
+    <div class="ba">
+      <div class="ba-ph"><div class="ba-p b">ÎNAINTE</div><div class="ba-p a">DUPĂ</div></div>
+      <div class="ba-info"><div><div class="ba-name">2 camere Floreasca · 55 mp</div><div class="ba-meta">Pachet Premium · 10 săptămâni</div></div><div class="ba-res">500€ → 720€</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S7 TESTIMONIALS -->
+<section id="testimonials">
+  <div class="sec-tag"><div class="dot"></div>Testimoniale</div>
+  <h2>Ce spun proprietarii.</h2>
+  <div class="te-g">
+    <div class="tec"><p class="tec-t">"Mă așteptam la randări frumoase și atât. Nu mă așteptam să am și un sistem clar pentru ce fac cu apartamentul după. Chiriașul de acum e cel mai bun pe care l-am avut."</p><div class="tec-n">Andrei M.</div><div class="tec-m">Garsonieră Floreasca · Pachet Standard</div><div class="tec-tag">320€ → 480€ / lună</div></div>
+    <div class="tec"><p class="tec-t">"Am stat mult timp nehotărât. Am început cu auditul și după am mers pe Premium. A meritat — apartamentul s-a ocupat în 5 zile de la listare."</p><div class="tec-n">Proprietar 2</div><div class="tec-m">2 camere · Pachet Premium</div><div class="tec-tag">500€ → 720€ / lună</div></div>
+    <div class="tec"><p class="tec-t">"Ce m-a convins a fost simularea financiară. Când am văzut diferența pe 5 ani, decizia a fost simplă."</p><div class="tec-n">Proprietar 3</div><div class="tec-m">Garsonieră · Pachet Standard</div><div class="tec-tag">+10.800€ în 5 ani</div></div>
+  </div>
+  <div class="cs">
+    <div class="cs-h">
+      <div class="cs-title">Garsonieră Floreasca — de la rotație constantă la chiriaș pe 2 ani</div>
+      <div class="cs-tags"><span class="cs-tag">București · Sector 2</span><span class="cs-tag">38 mp</span><span class="cs-tag">Pachet Standard</span><span class="cs-tag">7 săptămâni</span></div>
+    </div>
+    <div class="cs-body">
+      <div class="cs-g">
+        <div>
+          <div class="cs-sl">Situația inițială</div>
+          <p class="cs-p">Andrei, 47 de ani, moștenise garsoniera de la părinți. O închiria cu 320€/lună, dar nu reușea să păstreze chiriașii mai mult de 6–8 luni. Perioade de 1,5 luni goale între fiecare chiriaș. Reparații după fiecare plecare. Credea că problema sunt chiriașii. Nu era.</p>
+          <div style="margin-top:16px"><div class="cs-sl">Ce am schimbat</div><p class="cs-p">Layout reorganizat cu zonă de lucru. Depozitare integrată. Bucătărie refăcută cu fațade IKEA. Mobilier neutru și durabil.</p></div>
+        </div>
+        <div>
+          <div class="cs-sl">Buget implementare</div>
+          <div class="bud-g">
+            <div class="bud-row"><span>Serviciu design (Standard)</span><strong>1.050€</strong></div>
+            <div class="bud-row"><span>Mobilier + electrocasnice</span><strong>1.800€</strong></div>
+            <div class="bud-row"><span>Accesorii + decor</span><strong>400€</strong></div>
+            <div class="bud-row"><span>Intervenții mici (vopsit)</span><strong>550€</strong></div>
+            <div class="bud-total"><span>Total investiție</span><span>3.800€</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="cs-res">
+        <div class="cs-r"><div class="cs-rv">+160€</div><div class="cs-rl">chirie lunară față de înainte</div></div>
+        <div class="cs-r"><div class="cs-rv">5 zile</div><div class="cs-rl">până la primul chiriaș potrivit</div></div>
+        <div class="cs-r"><div class="cs-rv">22 luni</div><div class="cs-rl">durata șederii (a reînnoit)</div></div>
+        <div class="cs-r"><div class="cs-rv">~8 luni</div><div class="cs-rl">recuperare completă a investiției</div></div>
+      </div>
+      <div class="cs-q">"Sincer, mă așteptam la randări frumoase și atât. Nu mă așteptam să am și un sistem clar pentru ce fac cu apartamentul după. Chiriașul de acum e cel mai bun pe care l-am avut și cred că asta nu e o coincidență."<div class="cs-qa">— Andrei M., proprietar garsonieră Floreasca · Pachet Standard</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S8 PACKAGES -->
+<section id="packages">
+  <div class="sec-tag"><div class="dot"></div>Pachete</div>
+  <h2>Alege pachetul potrivit.</h2>
+  <p class="sec-sub">Fiecare proiect începe cu un pachet de design. Premium include tot — de la concept până la primul chiriaș semnat.</p>
+  <div class="pkg-g">
+    <!-- BASIC -->
+    <div class="pkg">
+      <div class="pkg-h"><div class="pkg-name">Basic</div><div class="pkg-price">20€<span> / mp</span></div><div class="pkg-desc">Design complet. Tu execuți, noi îți dăm direcția.</div></div>
+      <div class="pkg-div"></div>
+      <div class="pkg-b">
+        <div class="pkg-sl">Design</div>
+        <div class="pf"><span class="fd">–</span><span>Plan amenajare interioară</span></div>
+        <div class="pf"><span class="fd">–</span><span>Moodboard per cameră</span></div>
+        <div class="pf"><span class="fd">–</span><span>Centralizator decor + furnizori</span></div>
+        <div class="pkg-sl">Rental Kit</div>
+        <div class="pf"><span class="fdo">–</span><span class="fo">Nu este inclus</span></div>
+      </div>
+    </div>
+    <!-- STANDARD -->
+    <div class="pkg pkg-std">
+      <div class="pkg-h"><div class="pkg-name">Standard</div><div class="pkg-price">30€<span> / mp</span></div><div class="pkg-desc">Design + vizualizare + Rental Kit DIY.</div></div>
+      <div class="pkg-div"></div>
+      <div class="pkg-b">
+        <div class="pkg-sl">Design</div>
+        <div class="pf"><span class="fd">–</span><span>Plan + moodboard + centralizatoare</span></div>
+        <div class="pf"><span class="fd">–</span><span>Centralizator mobilier + furnizori</span></div>
+        <div class="pf"><span class="fd">–</span><span>Randări 1–2 per cameră</span></div>
+        <div class="pkg-sl">Execuție</div>
+        <div class="pf"><span class="fd">–</span><span>1 vizită pe șantier</span></div>
+        <div class="pkg-sl">Rental Kit</div>
+        <div class="pf"><span class="fd">–</span><span>Ghid evaluare chiriaș + documente</span></div>
+        <div class="pf"><span class="fd">–</span><span>Anunț foto + listare DIY</span></div>
+      </div>
+    </div>
+    <!-- PREMIUM FULL ORANGE -->
+    <div class="pkg pkg-pre">
+      <div class="pkg-h"><div class="pkg-name">Premium</div><div class="pkg-price">65€<span> / mp</span></div><div class="pkg-desc">Complet — de la design la primul chiriaș.</div></div>
+      <div class="pkg-div"></div>
+      <div class="pkg-b">
+        <div class="pkg-sl">Design</div>
+        <div class="pf"><span class="fd">–</span><span>Plan + moodboard + centralizatoare</span></div>
+        <div class="pf"><span class="fd">–</span><span>Randări complete per cameră</span></div>
+        <div class="pf"><span class="fd">–</span><span>Documentație mobilier custom</span></div>
+        <div class="pkg-sl">Execuție</div>
+        <div class="pf"><span class="fd">–</span><span>3 vizite pe șantier</span></div>
+        <div class="pf"><span class="fd">–</span><span>Recomandări furnizori + agenție</span></div>
+        <div class="pkg-sl kit">Rental Kit — Full Service</div>
+        <div class="pf"><span class="fd">–</span><span>Staging realizat de echipă</span></div>
+        <div class="pf"><span class="fd">–</span><span>Fotografie profesională</span></div>
+        <div class="pf"><span class="fd">–</span><span>Anunț redactat + optimizat</span></div>
+        <div class="pf"><span class="fd">–</span><span>Listare completă + monitorizare</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="audit">
+    <div class="aud-l">
+      <div class="aud-tag">Nu ești sigur dacă merită un proiect complet?</div>
+      <div class="aud-title">Audit de apartament</div>
+      <p class="aud-desc">Vizităm apartamentul, evaluăm starea și livrăm un raport complet cu ce merită schimbat, cât costă și cât câștigați în plus. Se scade din pachetul ales dacă continui.</p>
+    </div>
+    <div class="aud-r">
+      <div class="aud-price">200€</div>
+      <div class="aud-sub">per apartament · livrat în 48h</div>
+      <a class="aud-btn" href="#contact">Programează →</a>
+    </div>
+  </div>
+</section>
+
+<!-- S9 PROPERTY MANAGEMENT -->
+<section id="pm">
+  <div class="sec-tag"><div class="dot"></div>Ce urmează după proiect</div>
+  <h2>Relația cu tine nu se termină la livrare.</h2>
+  <p class="sec-sub">Dacă vrei liniștea că apartamentul e administrat profesional fără să fii disponibil pentru orice problemă — există abonamentele noastre lunare.</p>
+  <div class="pm-g">
+    <div class="pm-c">
+      <div class="pm-h"><div class="pm-name">Monitorizare</div><div class="pm-price">60€<span> / lună</span></div><div class="pm-tag">Ești prezent fără să fii prezent.</div></div>
+      <div class="pm-b">
+        <div class="pmf"><span class="fd">–</span><span>Confirmare plată chirie</span></div>
+        <div class="pmf"><span class="fd">–</span><span>Comunicare cu chiriașul</span></div>
+        <div class="pmf"><span class="fd">–</span><span>Raport lunar sumar</span></div>
+        <div class="pmf"><span class="fd">–</span><span>Notificare probleme</span></div>
+      </div>
+    </div>
+    <div class="pm-c">
+      <div class="pm-h"><div class="pm-name">Administrare</div><div class="pm-price">140€<span> / lună</span></div><div class="pm-tag">Noi gestionăm. Tu decizi ce contează.</div></div>
+      <div class="pm-b">
+        <div class="pmf"><span class="fd">–</span><span>Tot din Monitorizare</span></div>
+        <div class="pm-sep"></div>
+        <div class="pmf"><span class="fd">–</span><span>Coordonare intervenții tehnice</span></div>
+        <div class="pmf"><span class="fd">–</span><span>Inspecție semestrială</span></div>
+        <div class="pmf"><span class="fd">–</span><span>Raport lunar detaliat</span></div>
+      </div>
+    </div>
+    <div class="pm-c pm-pre">
+      <div class="pm-h"><div class="pm-name">Management complet</div><div class="pm-price">280€<span> / lună</span></div><div class="pm-tag">Zero implicare din partea ta.</div></div>
+      <div class="pm-b">
+        <div class="pmf"><span class="fd">–</span><span>Tot din Administrare</span></div>
+        <div class="pm-sep"></div>
+        <div class="pmf"><span class="fd">–</span><span>Găsire chiriaș nou</span></div>
+        <div class="pmf"><span class="fd">–</span><span>Restaging + relistare</span></div>
+        <div class="pmf"><span class="fd">–</span><span>Selecție chiriaș Rent Up</span></div>
+        <div class="pmf"><span class="fd">–</span><span>Apel trimestrial</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="pm-note">Contract minim 6 luni · Preaviz 30 zile · Disponibil după finalizarea proiectului Rent Up</p>
+</section>
+
+<!-- S10 FAQ -->
+<section id="faq">
+  <div class="sec-tag" style="justify-content:center"><div class="dot"></div>FAQ</div>
+  <h2 style="text-align:center">Întrebări frecvente.</h2>
+  <p class="sec-sub" style="text-align:center;margin:0 auto 40px">Răspunsuri la ce ne întreabă proprietarii cel mai des înainte să înceapă un proiect.</p>
+  <div class="faq-inner">
+    <div class="fi" onclick="this.classList.toggle('open')"><div class="fq">Cât durează un proiect de la început până la final?<span class="fi-icon">+</span></div><div class="fa">Între 4 și 12 săptămâni, în funcție de pachet și complexitate. Basic: 4–6 săptămâni. Premium cu suport complet în execuție: 8–12 săptămâni. Cea mai mare variabilă e viteza de feedback din partea ta.</div></div>
+    <div class="fi" onclick="this.classList.toggle('open')"><div class="fq">Cât costă amenajarea efectivă — mobilier și materiale?<span class="fi-icon">+</span></div><div class="fa">Serviciul nostru e separat de costul produselor. Garsonieră: ~2.000–3.500€. Apartament 2 camere: ~3.500–5.500€. Poți implementa etapizat. Centralizatorul livrat include prețuri orientative per element.</div></div>
+    <div class="fi" onclick="this.classList.toggle('open')"><div class="fq">Garantați că chiria va crește?<span class="fi-icon">+</span></div><div class="fa">Nu garantăm un număr exact — piața are variabile pe care nu le controlăm. Ce garantăm: un spațiu în segmentul premium local, listare profesională și sistem de selecție care reduce rotația. Calculatorul de pe site arată ordinea de mărime corectă.</div></div>
+    <div class="fi" onclick="this.classList.toggle('open')"><div class="fq">Trebuie să fiu disponibil pe tot parcursul?<span class="fi-icon">+</span></div><div class="fa">Nu permanent. Există 3–4 momente cheie unde avem nevoie de feedback sau decizie. În rest, lucrăm independent și comunicăm prin WhatsApp sau email.</div></div>
+    <div class="fi" onclick="this.classList.toggle('open')"><div class="fq">Ce se întâmplă dacă nu îmi place direcția propusă?<span class="fi-icon">+</span></div><div class="fa">Fiecare pachet include 2 runde de feedback per etapă. Ajustăm în limita rundelor incluse. De la a 3-a rundă se aplică un cost suplimentar comunicat în avans.</div></div>
+    <div class="fi" onclick="this.classList.toggle('open')"><div class="fq">Lucrați cu furnizori proprii sau aleg eu?<span class="fi-icon">+</span></div><div class="fa">Tu alegi. Noi recomandăm furnizori verificați (IKEA, Dedeman, magazine online, producători locali) cu prețuri și linkuri directe în centralizator. Dacă ai deja un furnizor preferat, îl integrăm fără nicio problemă.</div></div>
+    <div class="fi" onclick="this.classList.toggle('open')"><div class="fq">Cum arată plata? Plătesc tot în avans?<span class="fi-icon">+</span></div><div class="fa">Nu. Structura standard: 40% la semnarea contractului, 40% după aprobarea conceptului și 20% la livrarea finală. Detaliile pot varia ușor în funcție de pachet — le discutăm înainte să semnăm.</div></div>
+    <div class="fi" onclick="this.classList.toggle('open')"><div class="fq">Lucrați doar în București?<span class="fi-icon">+</span></div><div class="fa">În principal da, pentru că vizitele pe șantier sunt incluse în pachete. Pentru alte orașe — full remote posibil sau cu cost suplimentar de deplasare. Contactează-ne pentru situația concretă.</div></div>
+    <div class="fi" onclick="this.classList.toggle('open')"><div class="fq">De ce să nu angajez un designer mai ieftin?<span class="fi-icon">+</span></div><div class="fa">Un designer clasic livrează randări și se oprește. Noi livrăm un sistem complet: design + strategie de închiriere + Rental Kit + selecție chiriaș. Dacă vrei doar estetică, suntem probabil mai scumpi decât ai nevoie. Dacă vrei ca apartamentul să producă mai mult pe termen lung — calculul se schimbă.</div></div>
+  </div>
+</section>
+
+<!-- S11 CONTACT -->
+<section id="contact">
+  <h2 class="con-h">Hai să vedem ce poate face<br><em>apartamentul tău.</em></h2>
+  <p class="con-sub">Trimite-ne un mesaj cu adresa apartamentului și chiria actuală sau dorită.<br>Îți răspundem în 24h cu o estimare și disponibilitate.</p>
+  <div class="con-btns">
+    <a class="con-p" href="#">WhatsApp direct →</a>
+    <a class="con-g" href="mailto:contact@rentup.ro">Email</a>
+  </div>
+  <div class="con-cards">
+    <div class="cc"><div class="cc-l">WhatsApp</div><div class="cc-v">[+40 7XX XXX XXX]</div></div>
+    <div class="cc"><div class="cc-l">Email</div><div class="cc-v">[contact@rentup.ro]</div></div>
+    <div class="cc"><div class="cc-l">Instagram</div><div class="cc-v">[@rentup]</div></div>
+  </div>
+  <p class="con-micro">Consultație inițială gratuită · Fără angajament · Răspuns în 24h</p>
+</section>
+
+<footer>
+  <div class="f-logo">RentUp</div>
+  <div class="f-t">București · Rental Performance System · 2025</div>
+  <div class="f-t">© Rent Up. Toate drepturile rezervate.</div>
+</footer>
+
+<script>
+let years=5,propType='garsoniera';
+const CFG={
+  garsoniera:{rd:350,rMin:200,rMax:700,md:40,mMin:20,mMax:60,up:150,mh:'Interval tipic garsonieră: 25–50 mp',rh:'Interval tipic neoptimizată: 300–450€',v5:5,v10:10,vo5:1,vo10:2,rep:400,ib:55,iMin:3500,iMax:7000,c5:'4 (rotație mare)',c10:'7–8',co5:'1–2 (stabili)',co10:'2–3'},
+  '2camere':{rd:550,rMin:350,rMax:1000,md:60,mMin:40,mMax:80,up:200,mh:'Interval tipic 2 camere: 45–75 mp',rh:'Interval tipic neoptimizată: 450–700€',v5:4,v10:8,vo5:1,vo10:2,rep:550,ib:72,iMin:5000,iMax:10000,c5:'3 (rotație medie)',c10:'5–6',co5:'2 (stabili)',co10:'3–4'},
+  '3camere':{rd:800,rMin:500,rMax:1500,md:80,mMin:60,mMax:120,up:260,mh:'Interval tipic 3 camere: 65–100 mp',rh:'Interval tipic neoptimizată: 650–1.000€',v5:4,v10:8,vo5:1,vo10:2,rep:700,ib:82,iMin:7000,iMax:14000,c5:'3 (rotație medie)',c10:'5–6',co5:'2 (stabili)',co10:'3–4'}
+};
+function setType(t,btn){
+  propType=t;
+  document.querySelectorAll('.tbns:first-of-type .tbn, .tbn[onclick*="setType"]').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const c=CFG[t];
+  const ms=document.getElementById('mp-s'),rs=document.getElementById('re-s');
+  ms.min=c.mMin;ms.max=c.mMax;ms.value=c.md;
+  rs.min=c.rMin;rs.max=c.rMax;rs.value=c.rd;
+  document.getElementById('mp-h').textContent=c.mh;
+  document.getElementById('re-h').textContent=c.rh;
+  calc();
+}
+function setYears(y,btn){
+  years=y;
+  document.querySelectorAll('.tbn[onclick*="setYears"]').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  calc();
+}
+function fmt(n){return Math.round(n).toLocaleString('ro-RO')+'€';}
+function calc(){
+  const c=CFG[propType];
+  const mp=parseInt(document.getElementById('mp-s').value);
+  const rent=parseInt(document.getElementById('re-s').value);
+  document.getElementById('mp-d').textContent=' '+mp+' mp';
+  document.getElementById('re-d').textContent=' '+rent+'€';
+  const rentOpt=rent+Math.min(c.up,c.rMax*.95-rent);
+  const months=years*12;
+  const vac=years===5?c.v5:c.v10,vacO=years===5?c.vo5:c.vo10;
+  const gBad=(months-vac)*rent,nBad=gBad-c.rep*years;
+  const inv=Math.min(Math.max(mp*c.ib,c.iMin),c.iMax);
+  const gGood=(months-vacO)*rentOpt,nGood=gGood-inv;
+  const diff=nGood-nBad,roi=Math.round(inv/c.up);
+  document.getElementById('yr-l').textContent='pe '+years+' ani';
+  document.getElementById('r-cur').textContent=fmt(rent);
+  document.getElementById('r-opt').textContent=fmt(rentOpt);
+  document.getElementById('r-nb').textContent=fmt(nBad);
+  document.getElementById('r-ng').textContent=fmt(nGood);
+  document.getElementById('r-df').textContent=(diff>=0?'+':'')+fmt(diff);
+  document.getElementById('r-roi').textContent='Investiție recuperată în ~'+roi+' luni · total ~'+fmt(inv);
+  const ch=years===5?c.c5:c.c10,cho=years===5?c.co5:c.co10;
+  document.getElementById('r-tb').innerHTML=`<tr><td>Fără optimizare</td><td>${ch}</td><td>~${vac} luni</td><td>${fmt(gBad)}</td><td>${fmt(nBad)}</td></tr><tr class="hl"><td>Cu optimizare</td><td>${cho}</td><td>~${vacO} luni</td><td>${fmt(gGood)}</td><td class="vg">${fmt(nGood)}</td></tr>`;
+}
+calc();
+</script>
+</body>
+</html>
